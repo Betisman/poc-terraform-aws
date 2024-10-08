@@ -15,6 +15,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Log Environment Variables
+        run: |
+          echo "AWS_REGION: ${{ env.AWS_REGION }}"
+          echo "BUCKET_NAME: ${{ env.BUCKET_NAME }}"
+          echo "DOMAIN_NAME: ${{ env.DOMAIN_NAME }}"
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
