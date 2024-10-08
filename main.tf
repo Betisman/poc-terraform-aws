@@ -13,10 +13,17 @@ provider "aws" {
 resource "aws_s3_bucket" "website_bucket" {
   bucket = var.bucket_name
   acl    = "public-read"
+}
 
-  website {
-    index_document = "index.html"
-    error_document = "error.html"
+resource "aws_s3_bucket_website_configuration" "website_config" {
+  bucket = aws_s3_bucket.website_bucket.id
+
+  index_document {
+    suffix = "index.html"
+  }
+
+  error_document {
+    key = "error.html"
   }
 }
 
@@ -49,6 +56,7 @@ resource "aws_route53_record" "website_record" {
   name    = "www.${var.domain_name}"
   type    = "A"
   ttl     = 300
+  records = [aws_s3_bucket.website_bucket.website_endpoint]
 
   alias {
     name                   = aws_s3_bucket.website_bucket.website_domain
