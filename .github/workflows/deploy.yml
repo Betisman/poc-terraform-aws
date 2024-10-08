@@ -9,11 +9,15 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
-    environment: prod
+    environment:
+      name: prod
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
+      - name: List all environment variables
+        run: printenv
 
       - name: Log Environment Variables
         run: |
