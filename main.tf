@@ -12,6 +12,10 @@ provider "aws" {
 
 resource "aws_s3_bucket" "website_bucket" {
   bucket = var.bucket_name
+}
+
+resource "aws_s3_bucket_acl" "website_bucket_acl" {
+  bucket = aws_s3_bucket.website_bucket.id
   acl    = "public-read"
 }
 
@@ -55,11 +59,9 @@ resource "aws_route53_record" "website_record" {
   zone_id = aws_route53_zone.primary.zone_id
   name    = "www.${var.domain_name}"
   type    = "A"
-  ttl     = 300
-  records = [aws_s3_bucket.website_bucket.website_endpoint]
 
   alias {
-    name                   = aws_s3_bucket.website_bucket.website_domain
+    name                   = "${aws_s3_bucket.website_bucket.bucket}.s3-website.${var.region}.amazonaws.com"
     zone_id                = aws_route53_zone.primary.zone_id
     evaluate_target_health = false
   }
